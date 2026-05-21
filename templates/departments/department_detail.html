@@ -15,7 +15,7 @@
         <p>Course Code: {{ course.course_code }}</p>
         <p>Credits: {{ course.credits }}</p>
         <p>Level: {{ course.level }}</p>
-        <a href="/courses/{{ course.id }}/">View Course Details</a>
+        <a href="{% url 'course_detail' course.id %}">View Course Details</a>
     </div>
     <hr>
 {% empty %}
