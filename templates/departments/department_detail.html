@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ department.name }}</h1>
+
+<p><strong>Code:</strong> {{ department.code }}</p>
+<p><strong>Description:</strong> {{ department.description }}</p>
+<p><strong>Building:</strong> {{ department.building_name }}</p>
+
+<h2>Courses in this Department</h2>
+
+{% for course in courses %}
+    <div>
+        <h3>{{ course.title }}</h3>
+        <p>Course Code: {{ course.course_code }}</p>
+        <p>Credits: {{ course.credits }}</p>
+        <p>Level: {{ course.level }}</p>
+        <a href="/courses/{{ course.id }}/">View Course Details</a>
+    </div>
+    <hr>
+{% empty %}
+    <p>No courses found for this department.</p>
+{% endfor %}
+
+<p>
+    <a href="{% url 'department_list' %}">Back to Departments</a>
+</p>
+{% endblock %}
