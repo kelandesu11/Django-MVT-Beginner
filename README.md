@@ -119,20 +119,6 @@ Example students:
       templates/
       README.md
 
-## Project Summary
-
-This project follows Django's MVT pattern.
-
-The models define the data structure.
-
-The views retrieve data from the database.
-
-The templates display the data in HTML.
-
-The URL files connect browser paths to view functions.
-
-URL parameters are used for detail pages, such as viewing one department or one course.
-
 ## Home page: http://localhost:8000/
 ## Departments page: http://localhost:8000/departments/
 ## Admin-URL: http://localhost:8000/admin/
