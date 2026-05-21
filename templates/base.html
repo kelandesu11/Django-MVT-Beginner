@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>University Course Directory</title>
+    </head>
+    <body>
+        <nav>
+            <a href="{% url 'home' %}">Home</a> |
+            <a href="/departments/">Departments</a> |
+            <a href="/admin/">Admin</a>
+        </nav>
+
+        <hr>
+
+        {% block content %}
+        {% endblock %}
+    </body>
+</html>
