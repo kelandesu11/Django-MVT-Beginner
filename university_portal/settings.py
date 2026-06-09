@@ -44,7 +44,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'django_filters',
-    'registrations',
+    'registrations.apps.RegistrationsConfig',
 ]
 
 MIDDLEWARE = [
