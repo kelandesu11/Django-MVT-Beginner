@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.shortcuts import render
+from django.urls import path, include
 
 
 def home(request):
@@ -12,4 +13,5 @@ urlpatterns = [
     path('', home, name='home'),
     path('departments/', include('departments.urls')),
     path('courses/', include('courses.urls')),
+    path("api/", include("university_portal.api_urls")),
 ]
