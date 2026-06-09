@@ -1,124 +1,156 @@
-# Django MVT University Course Directory
+# University Course Directory API
 
-This project is a beginner Django MVT web application for a basic University Course Directory.
+## Running the Project
 
-The website allows users to view university departments, department details, courses inside each department, and course details.
+Build the containers:
 
-## Technologies Used
+```bash
+docker compose build
+```
 
-- Python
-- Django
-- PostgreSQL
-- Docker
-- Docker Compose
+Start the application:
 
-## How to Run the Project
+```bash
+docker compose up
+```
 
-Build the Docker containers:
+The application will be available at:
 
-    docker compose build
+```text
+http://localhost:8000/
+```
 
-Start the project:
+## Running Migrations
 
-    docker compose up
+Create migrations:
 
-Open the website in your browser:
+```bash
+docker compose exec web python manage.py makemigrations
+```
 
-    http://localhost:8000/
+Apply migrations:
 
-## How to Create Migrations
+```bash
+docker compose exec web python manage.py migrate
+```
 
-Run this command after creating or changing models:
+## Creating a Superuser
 
-    docker compose run web python manage.py makemigrations
+```bash
+docker compose exec web python manage.py createsuperuser
+```
 
-## How to Run Migrations
+Admin page:
 
-Run this command to apply migrations to the PostgreSQL database:
+```text
+http://localhost:8000/admin/
+```
 
-    docker compose run web python manage.py migrate
+## Part 1 Website URLs
 
-## How to Create a Superuser
+```text
+/
+/departments/
+/departments/<id>/
+/courses/<id>/
+```
 
-Run this command:
+## Part 2 API URLs
 
-    docker compose run web python manage.py createsuperuser
+```text
+/api/departments/
+/api/courses/
+/api/students/
+/api/enrollments/
+/api/audit-logs/
+```
 
-Then open the admin panel:
+## How I Tested the API
 
-    http://localhost:8000/admin/
+I used the Django REST Framework browsable API to test the endpoints.
 
-Use the admin panel to create sample data.
+The following scenarios were tested:
 
-## ADMIN-USER:
-###  Username: admin123
-###   Email: admin@test.com
-###   Password: admin123
-###   Password Again: admin123
+* Listing departments
+* Creating departments
+* Listing courses
+* Creating and updating courses
+* Listing students
+* Creating and updating students
+* Creating enrollments
+* Rejecting duplicate enrollments
+* Rejecting enrollments for inactive courses
+* Verifying audit logs were created automatically
 
-## Available Pages
+## Example Valid Requests
 
-Home page:
+### Create Department
 
-    /
+```json
+{
+    "name": "Computer Science",
+    "code": "CSC",
+    "description": "Department for computer science and software engineering courses.",
+    "building_name": "Engineering Building"
+}
+```
 
-Department list page:
+### Create Enrollment
 
-    /departments/
+```json
+{
+    "student": 1,
+    "course": 1,
+    "status": "active"
+}
+```
 
-Department detail page:
+## Example Invalid Requests
 
-    /departments/<department_id>/
+### Duplicate Enrollment
 
-Course detail page:
+```json
+{
+    "student": 1,
+    "course": 1,
+    "status": "active"
+}
+```
 
-    /courses/<course_id>/
+Expected result:
 
-Admin panel:
+```text
+Student is already enrolled in this course.
+```
 
-    /admin/
+### Enrollment for an Inactive Course
 
-## Sample Data
+```json
+{
+    "student": 1,
+    "course": 2,
+    "status": "active"
+}
+```
 
-Sample data can be created through the Django admin panel.
+Expected result:
 
-Example departments:
+```text
+Cannot enroll in an inactive course.
+```
 
-- Computer Science
-- Mathematics
-- Business Administration
+## Signals Used
 
-Example courses:
+Django signals were used to automatically create audit log entries when:
 
-- CSC101 - Intro to Programming
-- CSC201 - Data Structures
-- MTH101 - College Algebra
-- MTH220 - Statistics
-- BUS101 - Intro to Business
-- BUS250 - Marketing Principles
+* A student is created
+* A course is created
+* An enrollment is created
 
-Example students:
+The signals are located in `registrations/signals.py`.
 
-- Alex Carter
-- Jamie Lee
-- Morgan Smith
-- Taylor Brown
-- Jordan Miller
+## Transaction Used
 
-## Project Structure
+Enrollment creation uses `transaction.atomic()` to make sure the operation is completed as a single transaction.
 
-    django-mvt-assignment/
-      Dockerfile
-      docker-compose.yml
-      requirements.txt
-      manage.py
-      university_portal/
-      departments/
-      courses/
-      students/
-      templates/
-      README.md
-
-## Home page: http://localhost:8000/
-## Departments page: http://localhost:8000/departments/
-## Admin-URL: http://localhost:8000/admin/
+If any part of the enrollment process fails, all database changes are rolled back so that incomplete data is not saved.
